@@ -1,0 +1,82 @@
+buildscript {
+    ext {
+        kotlin_version = '1.1.1'
+        vertx_version = '3.4.1'
+        enableOssSnapshots = false
+    }
+
+    repositories {
+        jcenter()
+        mavenCentral()
+        if (enableOssSnapshots == 'true') {
+            maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
+        }
+    }
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+    }
+}
+
+plugins {
+    id 'java'
+    id 'application'
+    id 'com.github.johnrengelman.shadow' version '1.2.3'
+}
+
+apply plugin: 'kotlin'
+
+sourceCompatibility = '1.8'
+vertx_version = '3.4.1'
+
+repositories {
+
+    jcenter()
+    mavenCentral()
+}
+
+sourceSets {
+    main.java.srcDirs += 'src/main/kotlin'
+    test.java.srcDirs += 'src/test/kotlin'
+}
+
+dependencies {
+    compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    compile "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
+//    compile 'org.jetbrains.kotlinx:kotlinx-coroutines-core:0.14'
+    compile 'io.vertx:vertx-lang-kotlin:$vertx_version'
+    compile "io.vertx:vertx-core:$vertx_version"
+    compile "io.vertx:vertx-web:$vertx_version"
+    compile "io.vertx:vertx-lang-kotlin:$vertx_version"
+    compile "com.google.code.gson:gson:1.7.+"
+    compile 'nl.komponents.kovenant:kovenant:3.3.0'
+
+//    compile 'junit:junit:4.+'
+//    compile "io.vertx:vertx-unit:$vertx_version"
+
+    testCompile 'junit:junit:4.+'
+//    testCompile "org.mockito:mockito-core:1.+"
+    testCompile "com.mashape.unirest:unirest-java:1.+"
+    testCompile "io.vertx:vertx-unit:$vertx_version"
+
+    testCompile "org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version"
+
+//    compile "io.vertx:vertx-jdbc-client:$vertx_version"
+//    compile "io.vertx:vertx-mail-service:$vertx_version"
+
+}
+
+mainClassName = 'io.vertx.core.Launcher'
+
+shadowJar {
+    classifier = 'fat'
+    manifest {
+        attributes 'Main-Verticle': 'saffi.JSonBlackBoxRestService'
+    }
+    mergeServiceFiles {
+        include 'META-INF/services/io.vertx.core.spi.VerticleFactory'
+    }
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '2.10'
+}

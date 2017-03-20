@@ -1,0 +1,8 @@
+{
+  "http.port": 8080,
+  "test.host": "localhost",
+  //  "blackbox": "./generator-linux-amd64",
+  "blackbox": "./generator-macosx-amd64",
+  //  "blackbox": "./generator-windows-amd64.exe",
+  "pollInterval": 100
+}
